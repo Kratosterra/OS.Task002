@@ -9,8 +9,8 @@
 #include <semaphore.h>
 #include <signal.h>
 
-#define SHM_NAME "/shm_are"
-#define SEM_NAME "/sem_are"
+#define SHM_NAME "/shm_are_cool"
+#define SEM_NAME "/sem_are_cool"
 #define BUF_SIZE 100
 
 int num_processes;
@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
     }
 
     num_processes = atoi(argv[3]);
+    printf("Агроном приказал %d счетоводам разделится и наконец посчитать площадь!\n", num_processes);
     if (num_processes < 1)
     {
         printf("Неправильное кол-во процессов: %s\n", argv[3]);
@@ -124,11 +125,17 @@ int main(int argc, char *argv[])
         exit(1);
     }
     printf("Cчитываем входные данные...\n");
-    if (fscanf(infile, "%lf %lf %lf", &a, &b, &eps) != 3)
+    if (fscanf(infile, "%lf %lf", &a, &b) != 2)
     {
-        printf("Ошибка при чтении входных данных, убедитесь, что в файле ввода только 3 double числа.\n");
+        printf("Ошибка при чтении входных данных, убедитесь, что в файле ввода только 2 double числа.\n");
         exit(1);
     }
+    if (a < 0 || b < 0)
+    {
+        printf("Ошибка при чтении входных данных, убедитесь, что числа неотрицательные!\n");
+        exit(1);
+    }
+    printf("Получили данные a = %lf, b= %lf.\n", a, b);
     printf("Настраиваем хэндлер сигналов завершения...\n");
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
@@ -151,7 +158,7 @@ int main(int argc, char *argv[])
         ;
     printf("Завершаем..\n");
     fprintf(outfile, "Агроном и счетоводы получили общую площадь: %.6f кв.м\n", shared_area[0]);
-    printf("Агроном и счетоводы получили общую площадь: %.6f кв.м\n", shared_area[0]);
+    printf("Агроном и счетоводы получили общую площадь: %.6f кв.м\nПодробнее в файле вывода %s\n", shared_area[0], argv[2]);
     sem_unlink(SEM_NAME);
     sem_close(sem_area);
     shm_unlink(SHM_NAME);
