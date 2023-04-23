@@ -122,7 +122,6 @@ int main(int argc, char *argv[])
     // Доступ к разделяемой памяти
     child_process(client_id, a, b, shared_area->client_id, outfile);
     printf("Счетовод %d: общая сумма = %f\n", client_id, shared_area->sum);
-    fprintf(outfile, "Счетовод %d: общая сумма = %f\n", client_id, shared_area->sum);
     shared_area->num_clients += 1;
 
     // Освобождаем разделяемую память

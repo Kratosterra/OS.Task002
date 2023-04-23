@@ -121,8 +121,6 @@ int main(int argc, char *argv[])
     int client_num = shared_data_ptr->num_clients_completed + 1;
 
     printf("Счетовод %d запущен!\n", client_num);
-
-    // Обновление разделяемой памяти и сигнализация серверу
     struct sembuf sem_op;
     sem_op.sem_num = 0;
     sem_op.sem_op = 1;

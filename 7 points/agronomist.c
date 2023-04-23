@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     FILE *infile, *outfile;
     if (argc != 4)
     {
-        fprintf(stderr, "Использование: %s <файл ввода> <файл вывода> <кол-во независимых проццессов>\n", argv[0]);
+        fprintf(stderr, "Использование: %s <файл ввода> <файл вывода> <кол-во независимых процессов>\n", argv[0]);
         exit(1);
     }
     if ((infile = fopen(argv[1], "r")) == NULL)

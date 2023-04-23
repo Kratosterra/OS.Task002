@@ -18,9 +18,32 @@ struct shared_data
     int num_clients_total;
 };
 
+int shmid;
+int semid;
+struct shared_data *shared_data_ptr;
+
 void sigint_handler(int sig)
 {
     printf("\nПринят сигнал SIGINT. Завершение работы сервера.\n");
+    // Отключение от разделяемой памяти
+    if (shmdt(shared_data_ptr) == -1)
+    {
+        perror("Ошибка при отключении от разделяемой памяти");
+        exit(1);
+    }
+    // Удаление разделяемой памяти
+    if (shmctl(shmid, IPC_RMID, NULL) == -1)
+    {
+        perror("Ошибка при удалении разделяемой памяти");
+        exit(1);
+    }
+
+    // Удаление семафоров
+    if (semctl(semid, 0, IPC_RMID) == -1)
+    {
+        perror("Ошибка при удалении семафоров");
+        exit(1);
+    }
     exit(0);
 }
 
@@ -49,8 +72,6 @@ int main(int argc, char *argv[])
     signal(SIGINT, sigint_handler);
 
     // Создание/подключение к разделяемой памяти
-    int shmid;
-    struct shared_data *shared_data_ptr;
     if ((shmid = shmget(SHM_KEY, sizeof(struct shared_data), IPC_CREAT | 0666)) == -1)
     {
         perror("Ошибка при создании/подключении к разделяемой памяти");
